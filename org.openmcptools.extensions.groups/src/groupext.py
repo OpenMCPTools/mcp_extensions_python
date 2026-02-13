@@ -3,6 +3,12 @@ from mcp.types import BaseMetadata
 from typing import Any, Self
 from pydantic import ConfigDict, Field
 
+class GroupsExtensionConfig:
+    EXTENSION_ID = "org.openmcptools/groups"
+    
+    SERVER_CAPABILITIES_ID = EXTENSION_ID + "/server"
+    CLIENT_CAPABILITIES_ID = EXTENSION_ID + "/client"
+
 class Group(BaseMetadata):
     
     description: str | None = None
