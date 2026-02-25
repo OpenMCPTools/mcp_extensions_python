@@ -54,4 +54,4 @@ The python pydantic model implementation is based upon this json-schema
 ```
 This schema for hierarchical grouping was [initially proposed as a MCP protocol enhancement](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/1567#discussioncomment-14608597).  For a discussion specifically of the 'parent' field, and it's role in hierarchical grouping, [please see this and subsequent postings](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/1567#discussioncomment-14618688).
 
-The same schema is used for the [mcp_extensions_java group extension](https://github.com/OpenMCPTools/mcp_extensions_java/tree/main/org.openmcptools.extensions.groups) (Java SDK) and the [mcp_extensions_typescript group extension](https://github.com/OpenMCPTools/mcp_extensions_typescript/tree/main/org.openmcptools.extensions.groups) (Typescript SDK)
+The same schema is used for the [mcp_extensions_java group extension](https://github.com/OpenMCPTools/mcp_extensions_java) (Java SDK Extension) and the [mcp_extensions_typescript group extension](https://github.com/OpenMCPTools/mcp_extensions_typescript) (Typescript SDK Extension)
