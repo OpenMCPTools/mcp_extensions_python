@@ -20,7 +20,7 @@ The project defines a tree-based data model to organize **tools**, **prompts**, 
 
 #### [Config and Schema/Pydantic Model](https://github.com/OpenMCPTools/mcp_extensions_python/blob/main/org.openmcptools.extensions.groups/src/groupext.py) (`src/groupext.py`)
 
-Extension identifier constants (`org.openmcptools/groups`) and the [pydantic model definition for the Group type](https://github.com/OpenMCPTools/mcp_extensions_python/blob/main/org.openmcptools.extensions.groups/src/groupext.py).
+Extension identifier constants (`org.openmcptools/groups`) and the [pydantic model definition for the Group type and all the common types](https://github.com/OpenMCPTools/mcp_extensions_python/blob/main/org.openmcptools.extensions.groups/src/groupext.py).
 
 #### Schema
 
