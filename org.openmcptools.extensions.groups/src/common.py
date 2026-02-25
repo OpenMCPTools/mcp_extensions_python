@@ -111,30 +111,7 @@ class AbstractBase(ABC):
     def meta(self, meta: Dict[str, Any]) -> None:
         """Set the meta (property setter)"""
         self._meta = meta
-    
-    def __hash__(self) -> int:
-        """Generate hash code based on name"""
-        return hash(self._name)
-    
-    def __eq__(self, other: object) -> bool:
-        """
-        Check equality based on name
-        
-        Args:
-            other: The object to compare with
-            
-        Returns:
-            True if objects are equal, False otherwise
-        """
-        if self is other:
-            return True
-        if other is None:
-            return False
-        if self.__class__ != other.__class__:
-            return False
-        other_base = other
-        return self._name == other_base._name
-    
+          
     @abstractmethod
     def get_fully_qualified_name(self) -> str:
         """
