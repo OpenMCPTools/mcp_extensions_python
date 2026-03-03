@@ -8,7 +8,7 @@ class GroupsExtensionConfig:
     
     SERVER_CAPABILITIES_ID = EXTENSION_ID + "/server"
     CLIENT_CAPABILITIES_ID = EXTENSION_ID + "/client"
-
+    
 class Group(BaseMetadata):
     
     description: str | None = None
