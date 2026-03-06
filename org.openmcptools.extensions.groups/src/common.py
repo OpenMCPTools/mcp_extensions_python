@@ -59,8 +59,9 @@ class AbstractBase(abc.ABC):
     DEFAULT_SEPARATOR = "."
 
     def __init__(self, name: str, name_separator = None, title: str = None, description: str = None, icons: List[Icon] = None, meta: dict[str,Any] = None):
-        if name is None or name == '':
-            raise ValueError("name must not be null or empty")
+        # Validation for 'name' parameter
+        if name is None or len(name) == 0 or name.isspace():
+            raise ValueError("name must not be null, empty, or blank")
         self.name = name
         if (name_separator):
             self.name_separator = name_separator
@@ -71,6 +72,9 @@ class AbstractBase(abc.ABC):
         self.icons = icons
         self.meta = meta
 
+    def get_name_separator(self):
+        return self.name_separator
+    
     def get_name(self) -> str:
         return self.name
 
@@ -141,7 +145,7 @@ class Group(AbstractBase):
             return True
         return False
 
-    def get_children_groups(self) -> List['Group']:
+    def get_child_groups(self) -> List['Group']:
         return self.child_groups
 
     def add_child_tool(self, child_tool: 'Tool') -> bool:
@@ -158,7 +162,7 @@ class Group(AbstractBase):
             return True
         return False
 
-    def get_children_tools(self) -> List['Tool']:
+    def get_child_tools(self) -> List['Tool']:
         return self.child_tools
 
     def add_child_prompt(self, child_prompt: 'Prompt') -> bool:
@@ -175,7 +179,7 @@ class Group(AbstractBase):
             return True
         return False
 
-    def get_children_resources(self) -> List['Resource']:
+    def get_child_resources(self) -> List['Resource']:
         return self.child_resources
 
     def add_child_resource(self, child_resource: 'Resource') -> bool:
@@ -192,7 +196,7 @@ class Group(AbstractBase):
             return True
         return False
 
-    def get_children_prompts(self) -> List['Prompt']:
+    def get_child_prompts(self) -> List['Prompt']:
         return self.child_prompts
 
     def _get_fq_name_recursive(self, tg: 'Group') -> str:
@@ -243,12 +247,12 @@ class AbstractLeaf(AbstractBase):
     def get_parent_group_roots(self) -> List[Group]:
         return [g.get_root() for g in self.parent_groups]
 
-    def _get_first_parent_name(self) -> str:
+    def _get_primary_parent_name(self) -> str:
         return self.parent_groups[self.primary_parent_group_index].get_fully_qualified_name() \
             if self.primary_parent_group_index > -1 else None
 
     def get_fully_qualified_name(self) -> str:
-        first_parent_name = self._get_first_parent_name()
+        first_parent_name = self._get_primary_parent_name()
         return self.name if first_parent_name is None else first_parent_name + self.name_separator + self.name
 
 class ToolAnnotations:
@@ -362,12 +366,13 @@ class Resource(AbstractLeaf):
         return f"Resource [name={self.name}, fqName={self.get_fully_qualified_name()}, title={self.title}, description={self.description}, meta={self.meta}, uri={self.uri}, size={self.size}, mimeType={self.mime_type}, annotations={self.annotations}]"
 
 class PromptArgument():
-    def __init__(self, name: str, description: str = None, required: bool = False):
-        if name is None:
-            raise ValueError("name must not be none")
+    def __init__(self, name: str, required: bool = False, description: str = None):
+        # Validation for 'name' parameter
+        if name is None or len(name) == 0 or name.isspace():
+            raise ValueError("name must not be null, empty, or blank")
         self.name = name
-        self.description = description
         self.required = required
+        self.description = description
 
     def get_name(self) -> str:
         return self.name

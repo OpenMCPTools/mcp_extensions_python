@@ -18,7 +18,7 @@ from common import (
 
 class TestAbstractBase(unittest.TestCase):
     def test_throws_when_name_is_empty(self):
-        with self.assertRaisesRegex(ValueError, "name must not be null or empty"):
+        with self.assertRaisesRegex(ValueError, "name must not be null, empty, or blank"):
             Group(None)
 
     def test_uses_DEFAULT_SEPARATOR_by_default(self):
