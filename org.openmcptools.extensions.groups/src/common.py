@@ -1,5 +1,5 @@
 import abc
-from typing import List, Any, Dict, TypeVar, Generic
+from typing import List, Any, Dict, TypeVar, Generic, Callable
 
 from enum import Enum
 
@@ -58,11 +58,14 @@ class Annotations:
 class AbstractBase(abc.ABC):
     DEFAULT_SEPARATOR = "."
 
-    def __init__(self, name: str, title: str = None, description: str = None, icons: List[Icon] = None, meta: dict[str,Any] = None, name_separator: str = DEFAULT_SEPARATOR):
-        if name is None:
-            raise ValueError("name must not be null")
+    def __init__(self, name: str, name_separator = None, title: str = None, description: str = None, icons: List[Icon] = None, meta: dict[str,Any] = None):
+        if name is None or name == '':
+            raise ValueError("name must not be null or empty")
         self.name = name
-        self.name_separator = name_separator
+        if (name_separator):
+            self.name_separator = name_separator
+        else:
+            self.name_separator = AbstractBase.DEFAULT_SEPARATOR
         self.title = title
         self.description = description
         self.icons = icons
@@ -100,8 +103,8 @@ class AbstractBase(abc.ABC):
         pass
 
 class Group(AbstractBase):
-    def __init__(self, name: str, title: str = None, description: str = None, icons: List[Icon] = None, meta: Dict[str,Any] = None):
-        super().__init__(name, title, description, icons, meta)
+    def __init__(self, name: str, name_separator: str = AbstractBase.DEFAULT_SEPARATOR, title: str = None, description: str = None, icons: List[Icon] = None, meta: Dict[str,Any] = None):
+        super().__init__(name, name_separator, title, description, icons, meta)
         self.parent = None
         self.child_groups = []
         self.child_tools = []
@@ -125,6 +128,8 @@ class Group(AbstractBase):
         return self.parent is None
 
     def add_child_group(self, child_group: 'Group') -> bool:
+        if child_group in self.child_groups:
+            return False
         self.child_groups.append(child_group)
         child_group.parent = self
         return True
@@ -140,6 +145,8 @@ class Group(AbstractBase):
         return self.child_groups
 
     def add_child_tool(self, child_tool: 'Tool') -> bool:
+        if child_tool in self.child_tools:
+            return False
         self.child_tools.append(child_tool)
         child_tool.add_parent_group(self)
         return True
@@ -155,6 +162,8 @@ class Group(AbstractBase):
         return self.child_tools
 
     def add_child_prompt(self, child_prompt: 'Prompt') -> bool:
+        if child_prompt in self.child_prompts:
+            return False
         self.child_prompts.append(child_prompt)
         child_prompt.add_parent_group(self)
         return True
@@ -170,6 +179,8 @@ class Group(AbstractBase):
         return self.child_resources
 
     def add_child_resource(self, child_resource: 'Resource') -> bool:
+        if child_resource in self.child_resources:
+            return False
         self.child_resources.append(child_resource)
         child_resource.add_parent_group(self)
         return True
@@ -198,8 +209,8 @@ class Group(AbstractBase):
         return f"Group [name={self.name}, fqName={self.get_fully_qualified_name()}, isRoot={self.is_root()}, title={self.title}, description={self.description}, meta={self.meta}, childGroups={self.child_groups}, childTools={self.child_tools}, childPrompts={self.child_prompts}]"
 
 class AbstractLeaf(AbstractBase):
-    def __init__(self, name: str, title: str = None, description: str = None, icons: List[Icon] = None, meta: Dict[str,Any] = None):
-        super().__init__(name, title, description, icons, meta)
+    def __init__(self, name: str, name_separator: str = None, title: str = None, description: str = None, icons: List[Icon] = None, meta: Dict[str,Any] = None):
+        super().__init__(name, name_separator, title, description, icons, meta)
         self.parent_groups = []
         self.primary_parent_group_index = -1
 
@@ -289,8 +300,8 @@ class ToolAnnotations:
         return f"ToolAnnotation [title={self.title}, readOnlyHint={self.read_only_hint}, destructiveHint={self.destructive_hint}, idempotentHint={self.idempotent_hint}, openWorldHint={self.open_world_hint}, returnDirect={self.return_direct}]"
 
 class Tool(AbstractLeaf):
-    def __init__(self, name: str, title: str = None, description: str = None, icons: List[Icon] = None, meta: Dict[str, Any] = None):
-        super().__init__(name, title, description, icons, meta)
+    def __init__(self, name: str, name_separator: str = None, title: str = None, description: str = None, icons: List[Icon] = None, meta: Dict[str, Any] = None):
+        super().__init__(name, name_separator, title, description, icons, meta)
         self.input_schema = None
         self.output_schema = None
         self.tool_annotations = None
@@ -317,8 +328,8 @@ class Tool(AbstractLeaf):
         return f"Tool [name={self.name}, fqName={self.get_fully_qualified_name()}, title={self.title}, description={self.description}, meta={self.meta}, inputSchema={self.input_schema}, outputSchema={self.output_schema}, toolAnnotation={self.tool_annotations}]"
 
 class Resource(AbstractLeaf):
-    def __init__(self, name: str, uri: str, title: str = None, description: str = None, mime_type: str = None, size: int = None, icons: list[Icon], annotations: Annotations = None, meta: Dict[str, Any]  = None):
-        super().__init__(name, title, description, icons, meta)
+    def __init__(self, name: str, uri: str, name_separator: str = None, title: str = None, description: str = None, mime_type: str = None, size: int = None, icons: list[Icon] = None, annotations: Annotations = None, meta: Dict[str, Any]  = None):
+        super().__init__(name, name_separator, title, description, icons, meta)
         if uri is None:
             raise ValueError("uri must not be none")
         self.uri = uri
@@ -380,9 +391,12 @@ class PromptArgument():
         return self.name
 
 class Prompt(AbstractLeaf):
-    def __init__(self, name: str, title: str = None, description: str = None, arguments: List[PromptArgument] = [], icons: List[Icon], meta: Dict[str, Any] = None):
-        super().__init__(name, title, description, icons, meta)
-        self.arguments = arguments
+    def __init__(self, name: str, name_separator: str = None, title: str = None, description: str = None, arguments: List[PromptArgument] = None, icons: List[Icon] = None, meta: Dict[str, Any] = None):
+        super().__init__(name, name_separator, title, description, icons, meta)
+        if arguments:
+            self.arguments = arguments 
+        else:
+            self.arguments = []
 
     def get_arguments(self) -> List[PromptArgument]:
         return self.arguments
@@ -390,7 +404,9 @@ class Prompt(AbstractLeaf):
     def add_argument(self, argument: PromptArgument) -> bool:
         if argument is None:
             raise ValueError("argument must not be null")
-        self.prompt_arguments.append(argument)
+        if argument in self.arguments:
+            return False
+        self.arguments.append(argument)
         return True
 
     def remove_argument(self, argument: PromptArgument) -> bool:
@@ -424,4 +440,9 @@ class Converter(Generic[T, F], abc.ABC):
     def convert_from(self, target: T) -> F:
         pass
 
+U = TypeVar('U')
 
+def convertAll(items: List[T], convertFn: Callable[T,U]) -> List[U]:
+    l = [convertFn(i) for i in items]
+    f = filter(lambda x: x != None, l)
+    return list(f)
