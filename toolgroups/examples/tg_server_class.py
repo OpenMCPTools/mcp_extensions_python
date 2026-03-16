@@ -7,7 +7,7 @@ trusted_groups=Group(name="trustedgroup",title="Trusted Toolgroups", description
 # Create server
 tg_server = ToolgroupMCPServer("toolgroup server")
 
-# use toolgroup class annotation
+# use toolgroup class annotation and mcp.tool annotations for tools
 @tg_server.toolgroup(parent=trusted_groups, title="Arithmetic", description="Arithmetic Group")
 class Arithmetic:
     @tg_server.tool(title="Add X and Y Integer", annotations=ToolAnnotations(read_only_hint=True), structured_output=True)
