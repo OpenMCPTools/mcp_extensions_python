@@ -5,6 +5,7 @@ from typing import List, Any, Dict, Self, Tuple, Callable, Literal
 import mcp.types as mcpt
 from mcp.server.mcpserver.server import _CallableT, MCPServer
 import itertools
+from pickle import NONE
 '''Extension ID used to by Tool/Group Converter classes to convert _meta entry to/from
 list of groups'''
 EXTENSION_ID = "org.openmcptools/groups"
@@ -109,12 +110,14 @@ class AbstractBase(abc.ABC):
 
 class Group(AbstractBase):
     
-    _child_groups: List[Self] = []
-    _child_tools: List['Tool'] = []
+    _child_groups: List[Self] | None
+    _child_tools: List['Tool'] | None
     _parent: Self | None = None 
     
-    def __init__(self, name: str, name_separator: str = AbstractBase.DEFAULT_SEPARATOR, parent: Self = None, title: str = None, description: str = None, meta: Dict[str,Any] = None):
-        super().__init__(name=name, name_separator=name_separator, title=title, description=description, meta=meta)
+    def __init__(self, name: str, parent: Self = None, *args, **kwargs):
+        super().__init__(name=name, *args, **kwargs)
+        self._child_groups = []
+        self._child_tools = []
         if parent:
             parent.add_child_group(self)
 
@@ -164,11 +167,11 @@ class Group(AbstractBase):
         return self._get_fq_name(self)
     
     def __str__(self):
-        return f'Group: name={self.name} fqname={self.fqname} parent={self.parent} title={self.title} description={self.description} meta={self.meta}'
+        return f' name={self.name} fqname={self.fqname} parent={self.parent} title={self.title} description={self.description} meta={self.meta}'
 
 class AbstractLeaf(AbstractBase):
-    def __init__(self, name: str, name_separator: str = None, title: str = None, description: str = None, icons: List[mcpt.Icon] = None, meta: Dict[str,Any] = None):
-        super().__init__(name=name, name_separator=name_separator, title=title, description=description, icons=icons, meta=meta)
+    def __init__(self, name: str, *args, **kwargs):
+        super().__init__(name=name, *args, **kwargs)
         self._parent_groups = []
 
     def add_parent_group(self, parent_group: Group) -> bool:
@@ -192,7 +195,7 @@ class AbstractLeaf(AbstractBase):
 class Tool(AbstractLeaf):
     
     _annotations: mcpt.ToolAnnotations | None = None 
-    _input_schema: dict[str, Any]
+    _input_schema: dict[str, Any] | None = None
     _output_schema: dict[str, Any] | None = None 
     
     def __init__(self, 
@@ -245,12 +248,15 @@ class Tool(AbstractLeaf):
         self._input_schema = value
         
     def __str__(self):
-        return f'Tool: name={self.name} fqname={self.fqname} title={self.title} description={self.description} input_schema={self.input_schema} output_schema={self.output_schema} icons={self.icons} annotations=ToolAnnotations({self.annotations}) meta={self.meta} parent_groups={self.get_parent_groups()}'
+        return f' name={self.name} fqname={self.fqname} title={self.title} description={self.description} input_schema={self.input_schema} output_schema={self.output_schema} icons={self.icons} annotations=ToolAnnotations({self.annotations}) meta={self.meta} parent_groups={self.get_parent_groups()}'
 
 class ToolGroupConverter():
     
-    _group_cache: Dict[str, Group] = dict()
+    _group_cache: Dict[str, Group] = None
     
+    def __init__(self):
+        self._group_cache = dict()
+        
     def convert_to(self, source):  
         # pydantic provides dict when deserializing
         if isinstance(source, dict):
@@ -364,11 +370,17 @@ class ToolConverter():
 class ToolgroupMCPServer(MCPServer):
     '''override of MCPServer so that mcp.toolgroup class decorator and add_tool_ex (Tool) method added'''
     
-    __tools_init = []
-    _toolgroup: Group = None
-    _tool_converter = ToolConverter()
+    _toolgroup: Group | None
+    _tool_converter: ToolConverter
+    __tools_init: List[Tuple[Callable, dict]]
     '''members for processing of toolgroup class decorator processing'''
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__tools_init = []
+        self._toolgroup = None 
+        self._tool_converter = ToolConverter()
+        
     def get_toolgroup(self) -> Group:
         return self._group
     
