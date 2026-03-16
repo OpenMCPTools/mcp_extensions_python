@@ -88,3 +88,38 @@ uv run python examples/tg_server_dyn.py
 Note: The python sdk has recently refactored the MCPServer class (previously known as FastMCP). Since there is not yet a released 
 version of the python sdk, this uv dependency is on the python-sdk
 git repository source code.
+
+# Group Schema
+
+```json
+#### Schema
+
+The python pydantic model implementation is based upon this json-schema
+
+```json
+        "Group": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "parent": {
+                    "$ref": "#/definitions/Group",
+                },
+                "description": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "_meta": {
+                    "additionalProperties": {},
+                    "type": "object"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "type": "object"
+        }
+```
+The pydantic model declaration for this class is [here](./src/toolgroups/__init__.py#L13)
