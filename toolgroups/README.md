@@ -92,11 +92,6 @@ git repository source code.
 # Group Schema
 
 ```json
-#### Schema
-
-The python pydantic model implementation is based upon this json-schema
-
-```json
         "Group": {
             "properties": {
                 "name": {
