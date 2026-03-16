@@ -3,8 +3,10 @@ name = "mcp-extensions-python"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.10"
-dependencies = [ "org-openmcptools-extensions-grouping" ]
+requires-python = ">=3.13"
 
-[tool.uv.sources]
-org-openmcptools-extensions-grouping = { path = "./org.openmcptools.extensions.grouping" }
+[tool.uv.workspace]
+members = [
+    "mcptoolgroups",
+    "toolgroups",
+]
