@@ -117,4 +117,4 @@ git repository source code.
             "type": "object"
         }
 ```
-The pydantic model declaration for this class is [here](./src/toolgroups/__init__.py#L13)
+The pydantic model declaration for this class is [here](./src/toolgroups/__init__.py#L12)

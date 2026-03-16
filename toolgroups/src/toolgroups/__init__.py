@@ -5,7 +5,6 @@ from typing import List, Any, Dict, Self, Tuple, Callable, Literal
 import mcp.types as mcpt
 from mcp.server.mcpserver.server import _CallableT, MCPServer
 import itertools
-from pickle import NONE
 '''Extension ID used to by Tool/Group Converter classes to convert _meta entry to/from
 list of groups'''
 EXTENSION_ID = "org.openmcptools/groups"
