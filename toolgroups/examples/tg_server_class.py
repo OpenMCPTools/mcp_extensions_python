@@ -28,6 +28,7 @@ import asyncio
 async def main():
     async with Client(tg_server) as client:
         lr = await client.list_tools()
+        print("Client received the following grouped tools")
         for t in ToolConverter().convert_to_list(lr.tools):
             for r in t.get_roots():
                 print(f'Group:{str(r)}\n\t Tool:{str(t)}')
