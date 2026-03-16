@@ -1,16 +1,15 @@
 # MCP Toolgroups Extension
 
 [MCP servers](https://modelcontextprotocol.io/docs/learn/server-concepts) frequently have a large number of mcp tools to expose. This is especially true
-for enterprise servers and gateways, that need to aggregate and expose multiple tool to clients.
+for enterprise servers and gateways, that need to aggregate and expose multiple tools to clients.
 
 This project provides an extension for the [MCP python sdk](https://github.com/modelcontextprotocol/python-sdk) to support the use of
 server toolgroups.
 
-Toolgroups represent collections of MCP tools. Groups may be hierarchical or flat, as defined by the developer. These groupings may or may not be communicated to MCP clients as this decision can be made at runtime, and so may be based upon arbitrary server criteria (e.g. security boundaries, authenticated
-user, etc).
+Toolgroups represent collections of MCP tools. Groups may be hierarchical or flat, as defined by the developer. These groupings may or may not be communicated to MCP clients as this decision can be made at request time, and so may be based upon arbitrary server criteria (e.g. current security boundaries, user role/authorization, organizational governance and administration, etc).
 
 Toolgroups also provide a way to prevent or reduce the inefficiencies in 
-context exchanges between clients and MCP servers that can be present with exposure of a large number of tools.  Groups may have their own metadata (e.g. title, description, etc) defined by the server, that can be used to present abstractions.
+context exchange between clients and servers with many tools (e.g. gateways). Groups may have their own metadata (e.g. title, description, etc) defined by the server, that can be used to present abstractions.  [See here for a clear description of this aggregation problem](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/2204?sort=new#discussioncomment-15994902).
 
 ## Example: Arithmetic
 
@@ -64,7 +63,6 @@ hierarchy
 trusted_groups=Group(name="trustedgroup",title="Trusted Toolgroups", description="The tools and toolgroups in this group are trusted by this server")
 ...
 ```
-
 Note that Groups may be dynamically built and added to ToolgroupsMCPServers
 also.  The [examples/tg_server_dyn.py](./examples/tg_server_dyn.py) does this rather than declaring
 a Arithmetic class as a toolgroup.
