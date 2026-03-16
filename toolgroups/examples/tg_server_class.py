@@ -30,7 +30,7 @@ async def main():
         lr = await client.list_tools()
         for t in ToolConverter().convert_to_list(lr.tools):
             for r in t.get_roots():
-                print(f'group={str(r)}\n\t tool={str(t)}')
+                print(f'Group:{str(r)}\n\t Tool:{str(t)}')
             
 if __name__ == "__main__":
     asyncio.run(main())
