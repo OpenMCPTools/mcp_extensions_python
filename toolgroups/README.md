@@ -1,4 +1,4 @@
-# MCP Toolgroups Extension
+# Toolgroups Extension
 
 [MCP servers](https://modelcontextprotocol.io/docs/learn/server-concepts) frequently have a large number of mcp tools to expose. This is especially true
 for enterprise servers and gateways, that need to aggregate and expose multiple tools to clients.
@@ -14,7 +14,7 @@ context exchange between clients and servers with many tools (e.g. gateways). [S
 Groups may also have their own metadata (e.g. title, description, etc) defined by the server. This metadata can be used to define
 domain-appropriate abstractions for use by clients. 
 
-## Example: Arithmetic Toolgroup
+## Example: Arithmetic
 
 A common example for server-side tools in the python sdk is a simple
 add function decorated with @mcp.tool decorator:
@@ -70,7 +70,7 @@ Note that Groups may be dynamically built and added to ToolgroupsMCPServers
 also.  The [examples/tg_server_dyn.py](./examples/tg_server_dyn.py) does this rather than declaring
 a Arithmetic class as a toolgroup.
 
-# Running API Tests
+# API Tests
 
 ```text
 uv run pytest tests/api_tests.py
@@ -85,3 +85,6 @@ or
 uv run python examples/tg_server_dyn.py
 ```
 
+Note: The python sdk has recently refactored the MCPServer class (previously known as FastMCP). Since there is not yet a released 
+version of the python sdk, this uv dependency is on the python-sdk
+git repository source code.
