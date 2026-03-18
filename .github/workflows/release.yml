@@ -35,9 +35,5 @@ jobs:
       run: uv python install 3.13
     - name: Build toolgroups
       run: uv build
-      with:
-        submodules: 'toolgroups'
     - name: Publish
       run: uv publish
-      with:
-        submodules: 'toolgroups'
