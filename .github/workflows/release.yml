@@ -36,4 +36,4 @@ jobs:
     - name: Build toolgroups
       run: uv build
     - name: Publish
-      run: uv publish
+      run: uv publish toolgroups
